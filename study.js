@@ -1,68 +1,41 @@
-var mixed_list = ['one', 2, 3.0, {'four': 'four', 'five': 'five'}, null, undefined];
+// define the Person Class
+function Person() {}
 
-var list = [1, 2, 3, 4];
-console.log(list.length);
-
-list[1000] = 0;
-console.log(list.length);
-
-
-
-var list = [1, 2, 3, 4, 5, 6];
-console.log(list.length);
-
-list.length = 3;
-for (var i = 0; i < list.length; i++) {
-    console.log(list[i]);
+Person.prototype.walk = function () {
+    console.log('I am walking');
 };
 
-var list = [1, 2, 3, 4, 5];
-console.log(list);
-list[5] = 6;
-console.log(list);
-list.push(7);
-console.log(list);
-console.log('-----------------')
-
-
-var list = [1, 2, 3, 4, 5];
-var deleted = list.splice(1, 3);
-console.log(deleted);
-console.log(list);
-
-var list = [1, 2, 3, 4, 5];
-var deleted = list.pop();
-console.log(deleted);
-console.log(list);
-
-var list = [1, 2, 3, 4, 5];
-delete list[2];
-console.log(list);
-
-Array.dim = function (dimension, initial) {
-    var a = [], i;
-    for (i = 0; i < dimension; i++) {
-        a[i] = initial;
-    };
-    return a;
+Person.prototype.sayHello = function () {
+    console.log('hello');
 };
 
-var list = Array.dim(5, 0);
-console.log(list);
-console.log('----------');
-
-Array.dim_2d = function (m, n, initial) {
-    var outer = [], inner = [], i, j;
-    
-    for (i = 0; i < n; i++) {
-        inner[i] = initial;
-    };
-
-    for (j = 0; j < m; j++) {
-        outer[j] = inner;
-    };
-    return outer;
+// define the Student Class
+function Student () {
+    // Call the parent constructor
+    Person.call(this);
 };
 
-var list_2d = Array.dim_2d(5, 3, 0);
-console.log(list_2d);
+// inherit Person
+Student.prototype = new Person();
+
+// correct the constructor pointer because it points to Person
+Student.prototype.construcrtor = Student;
+
+// replace the sayHello method
+Student.prototype.sayHello = function () {
+    console.log('hi, i am a student');
+};
+
+// add sayGoodbye method
+Student.prototype.sayGoodbye = function () {
+    console.log('goodbye');
+};
+
+var student1 = new Student();
+student1.sayHello(); // hi, i am a student
+student1.walk(); // I am walking
+student1.sayGoodbye(); // goodbye
+
+// check inheritance
+console.log(student1 instanceof Person); // true
+console.log(student1 instanceof Student); // true
