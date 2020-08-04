@@ -33,3 +33,14 @@ c.length = 3;
 console.log(a);
 console.log(b);
 console.log(c);
+
+var a = Array.apply(null, {length: 3});
+console.log(a);
+
+var a = {
+    a : 'abc',
+    b : 2
+};
+
+console.log(a)
+console.log(a.toString())
