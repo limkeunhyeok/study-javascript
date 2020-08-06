@@ -1,100 +1,108 @@
-var a = 42;
-var b = a.toString();
+var x = '42';
+var y = true;
 
-var c = '3.14';
-var d = +c;
+console.log(x == y); // false
 
-console.log(typeof b); // string
-console.log(typeof d); // number
+var x = '42';
+var y = false;
 
-var c = '3.14';
-var d = 5+ +c;
-console.log(typeof d); // number
-console.log(d); // 8.14
+console.log(x == y); // false
 
-var a = '42';
-var b = '42px';
+var a = null;
+var b;
 
-console.log(Number(a)); // 42
-console.log(parseInt(a)); // 42
+console.log(a == b); // true
+console.log(a == null); // true
+console.log(b == null); // true
 
-console.log(Number(b)); // NaN
-console.log(parseInt(b)); // 42
-
-var a = '0';
-var b = [];
-var c = {};
-
-var d = '';
-var e = 0;
-var f = null;
-var g;
-
-console.log(!!a); // true
-console.log(!!b); // true
-console.log(!!c); // true
-console.log(!!d); // false
-console.log(!!e); // false
-console.log(!!f); // false
-console.log(!!g); // false
-
-var a = [1, 2];
-var b = [3, 4];
-
-console.log(a + b); // 1, 23, 4
-
-
-var a = '3.14';
-var b = a - 0;
-
-console.log(typeof b); // number;
-console.log(b); // 3.14
-
-function onlyOne(a, b, c) {
-    return !!((a && !b && !c) || (!a && b && !c) || (!a && !b && c));
-}
-
-var a = true;
-var b = false;
-
-console.log(onlyOne(a, b, b)); // true
-console.log(onlyOne(b, a, b)); // true
-console.log(onlyOne(a, b, a)); // false
-
-function onlyOne() {
-    var sum = 0;
-    for (var i = 0; i < arguments.length; i++) {
-        // falsy 값은 0으로 취급되어 건너뛴다.
-        // NaN은 피해야 한다.
-        if (arguments[i]) {
-            sum += arguments[i];
-        }
-    }
-    return sum == 1;
-}
-
-var a = true;
-var b = false;
-
-console.log(onlyOne(b, a)); // true
-console.log(onlyOne(b, a, b, b, b)); // true
-
-console.log(onlyOne(b, b)); // false
-console.log(onlyOne(b, a, b, b, b, a)); // false
+console.log(a == false); // false
+console.log(b == false); // false
+console.log(a == ''); // false
+console.log(b == ''); // false
+console.log(a == 0); // false
+console.log(b == 0); // false
 
 var a = 42;
-var b = 'abc';
-var c = null;
+var b = [42];
 
-console.log(a || b);
-console.log(a && b);
+console.log(a == b); // true
 
-console.log(c || b);
-console.log(c && b);
+var a = 'abc';
+var b = Object(a);
 
-function foo() {
-    console.log(a);
+console.log(a === b); // false
+console.log(a == b); // true
+
+
+
+var a = null;
+var b = Object(a);
+console.log(a == b); // false
+
+var c = undefined;
+var d = Object(c);
+console.log(c == d); // false
+
+var e = NaN;
+var f = Object(e);
+console.log(e == f); // false
+
+Number.prototype.valueOf = function() {
+    return 3;
 }
+console.log(new Number(2) == 3); // true
 
-var a = 42;
-a && foo();
+console.log('0' == null); // false
+console.log('0' == undefined); // false
+console.log('0' == false); // true
+console.log('0' == NaN); // false
+console.log('0' == 0); // true
+console.log('0' == ''); // false
+
+console.log(false == null); // false
+console.log(false == undefined); // false
+console.log(false == NaN); // false
+console.log(false == 0); // true
+console.log(false == ''); // true
+console.log(false == []); // true
+console.log(false == {}); // false
+
+console.log('' == null); // false
+console.log('' == undefined); // false
+console.log('' == NaN); // false
+console.log('' == 0); // true
+console.log('' == []); // true
+console.log('' == {}); // false
+
+console.log(0 == null); // false
+console.log(0 == undefined); // false
+console.log(0 == NaN); // false
+console.log(0 == []); // true
+console.log(0 == {}); // false
+
+console.log([] == ![]); // true
+
+console.log(2 == [2]); // true
+console.log('' == [null]); // true
+
+console.log(0 == '\n'); // true
+
+var a = ['42'];
+var b = ['043'];
+
+console.log(a < b); // false
+
+var a = {b: 42};
+var b = {b: 43};
+
+console.log(a < b);
+
+var a = {b: 42};
+var b = {b: 43};
+
+console.log(a < b); // false
+console.log(a == b); // false
+console.log(a > b); // false
+
+console.log(a <= b); // true
+console.log(a >= b); // true
