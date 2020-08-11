@@ -1,3 +1,6 @@
+foo();
+
 function foo() {
-    console.log(2);
+    console.log(a); // undefined
+    var a = 2;
 }
