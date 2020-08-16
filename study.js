@@ -1,46 +1,29 @@
-var MyModules = (function Manager() {
-    var modules = {};
+function foo(num) {
+    console.log("foo: " + num);
+    // foo가 몇 번 호출됐는지 추적한다
+    // this는 foo를 어떻게 호출하느냐에 따라 진짜 foo가 된다
+    this.count++;
+}
 
-    function define(name, deps, impl) {
-        for (var i = 0; i <deps.length; i++) {
-            deps[i] = modules[deps[i]];
-        }
-        modules[name] = impl.apply(impl, deps);
+foo.count = 0;
+
+var i;
+
+for (i = 0; i < 10; i++) {
+    if (i > 5) {
+        // call 함수로 호출하므로
+        // this는 자신의 함수 객체 foo를 가리킨다
+        foo.call(foo, i);
     }
+}
 
-    function get(name) {
-        return modules[name];
-    }
+// foo: 6
+// foo: 7
+// foo: 8
+// foo: 9
 
-    return {
-        define: define,
-        get: get
-    };
-})();
+console.log(foo.count); // 4
 
-MyModules.define('bar', [], function () {
-    function hello(who) {
-        return 'Let me introduce: ' + who;
-    }
+var Ø = {};
 
-    return {
-        hello: hello
-    };
-});
-
-MyModules.define('foo', ['bar'], function (bar) {
-    var hungry = 'hippo';
-    function awesome() {
-        console.log(bar.hello(hungry).toUpperCase());
-    }
-    return {
-        awesome: awesome
-    };
-});
-
-var bar = MyModules.get('bar');
-var foo = MyModules.get('foo');
-
-console.log(bar.hello('hippo'));
-
-foo.awesome();
+console.log(Ø)
