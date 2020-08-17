@@ -1,29 +1,19 @@
-function foo(num) {
-    console.log("foo: " + num);
-    // foo가 몇 번 호출됐는지 추적한다
-    // this는 foo를 어떻게 호출하느냐에 따라 진짜 foo가 된다
-    this.count++;
+function foo() {
+    // 화살표 함수를 반환한다
+    return (a) => {
+        // 여기서 this는 어휘적으로 foo()에서 상속된다
+        console.log(this.a);
+    };
 }
 
-foo.count = 0;
+var obj1 = {
+    a: 2
+};
 
-var i;
+var obj2 = {
+    a: 3
+};
 
-for (i = 0; i < 10; i++) {
-    if (i > 5) {
-        // call 함수로 호출하므로
-        // this는 자신의 함수 객체 foo를 가리킨다
-        foo.call(foo, i);
-    }
-}
-
-// foo: 6
-// foo: 7
-// foo: 8
-// foo: 9
-
-console.log(foo.count); // 4
-
-var Ø = {};
-
-console.log(Ø)
+var bar = foo.call(obj1);
+console.log('-------')
+bar.call(obj2);
