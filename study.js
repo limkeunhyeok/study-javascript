@@ -1,26 +1,22 @@
-function Foo(name) {
-    this.name = name;
-}
-
-Foo.prototype.myName = function() {
-    return this.name;
+Foo = {
+    init: function(who) {
+        this.me = who;
+    },
+    identify: function() {
+        return "I am " + this.me;
+    }
 };
 
-function Bar(name, label) {
-    Foo.call(this, name);
-    this.label = label;
-}
+Bar = Object.create(Foo);
 
-// Bar.prototype를 Foo.prototype에 연결한다
-Bar.prototype = Object.create(Foo.prototype);
-
-// 여기서 Bar.prototype.constructor은 사라졌으니
-// 이 프로퍼티에 의존하는 코드가 있다면 수동으로 일일이 해결해야 한다
-Bar.prototype.myLabel = function() {
-    return this.label;
+Bar.speak = function() {
+    console.log("Hello, " + this.identify() + ".");
 };
 
-var a = new Bar("a", "obj a");
+var b1 = Object.create(Bar);
+b1.init("b1");
+var b2 = Object.create(Bar);
+b2.init("b2");
 
-console.log(a.myName());
-console.log(a.myLabel());
+b1.speak();
+b2.speak();
