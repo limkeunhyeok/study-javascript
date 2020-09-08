@@ -1,4 +1,4 @@
-var p1 = Promise.resolve(42);
-var p2 = Promise.resolve(p1);
+// ajax({url}, {callback})같은 유틸리티가 있다고 하자
 
-console.log(p1 === p2); // true
+// 프로미스-인식형 AJAX
+ 
