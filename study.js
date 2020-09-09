@@ -1,4 +1,16 @@
-// ajax({url}, {callback})같은 유틸리티가 있다고 하자
+var p1 = Promise.resolve(21);
+var p2 = Promise.resolve(42);
+var p3 = Promise.resolve("???");
 
-// 프로미스-인식형 AJAX
- 
+Promise.map([p1, p2, p3], function(pr, done) {
+    Promise.resolve(pr)
+    .then(
+        function(v) {
+            done(v * 2);
+        },
+        done
+    );
+})
+.then(function(vals) {
+    console.log(vals);
+});
