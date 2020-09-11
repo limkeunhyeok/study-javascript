@@ -1,16 +1,48 @@
-var p1 = Promise.resolve(21);
-var p2 = Promise.resolve(42);
-var p3 = Promise.resolve("???");
+// function getY(x) {
+//     return new Promise(function(resolve, reject) {
+//         setTimeout(function() {
+//             resolve((3 * x) - 1);
+//         }, 100);
+//     });
+// }
 
-Promise.map([p1, p2, p3], function(pr, done) {
-    Promise.resolve(pr)
-    .then(
-        function(v) {
-            done(v * 2);
-        },
-        done
-    );
-})
-.then(function(vals) {
-    console.log(vals);
+// function foo(bar, baz) {
+//     var x = bar * baz;
+//     return getY(x)
+//     .then(function(y) {
+//         return [x, y];
+//     });
+// }
+
+// foo(10, 20)
+// .then(function(msgs) {
+//     var x = msgs[0];
+//     var y = msgs[1];
+
+//     console.log(x, y); // 200 599
+// });
+
+function getY(x) {
+    return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+            resolve((3 * x) - 1);
+        }, 100);
+    });
+}
+
+function foo(bar, baz) {
+    var x = bar * baz;
+    return [
+        Promise.resolve(x),
+        getY(x)
+    ];
+}
+
+Promise.all(
+    foo(10, 20)
+)
+.then(function(msgs) {
+    var x = msgs[0];
+    var y = msgs[1];
+    console.log(x, y);
 });
