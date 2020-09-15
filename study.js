@@ -1,48 +1,16 @@
-// function getY(x) {
-//     return new Promise(function(resolve, reject) {
-//         setTimeout(function() {
-//             resolve((3 * x) - 1);
-//         }, 100);
-//     });
-// }
+var a = 1;
+var b = 2;
 
-// function foo(bar, baz) {
-//     var x = bar * baz;
-//     return getY(x)
-//     .then(function(y) {
-//         return [x, y];
-//     });
-// }
-
-// foo(10, 20)
-// .then(function(msgs) {
-//     var x = msgs[0];
-//     var y = msgs[1];
-
-//     console.log(x, y); // 200 599
-// });
-
-function getY(x) {
-    return new Promise(function(resolve, reject) {
-        setTimeout(function() {
-            resolve((3 * x) - 1);
-        }, 100);
-    });
+function *foo() {
+    a++;
+    yield;
+    b = b * a;
+    a = (yield b) + 3;
 }
 
-function foo(bar, baz) {
-    var x = bar * baz;
-    return [
-        Promise.resolve(x),
-        getY(x)
-    ];
+function *bar() {
+    b--;
+    yield;
+    a = (yield 8) + b;
+    b = a * (yield 2);
 }
-
-Promise.all(
-    foo(10, 20)
-)
-.then(function(msgs) {
-    var x = msgs[0];
-    var y = msgs[1];
-    console.log(x, y);
-});
