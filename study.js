@@ -1,16 +1,17 @@
-var a = 1;
-var b = 2;
-
-function *foo() {
-    a++;
-    yield;
-    b = b * a;
-    a = (yield b) + 3;
+function *main() {
+    var x = yield "hello world!";
+    
+    // 실행되지 않음
+    console.log(x);
 }
 
-function *bar() {
-    b--;
-    yield;
-    a = (yield 8) + b;
-    b = a * (yield 2);
+var it = main();
+it.next();
+
+try {
+    it.throw("???");
+} catch (error) {
+    console.log(error);
 }
+
+// ???
