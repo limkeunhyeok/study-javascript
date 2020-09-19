@@ -1,25 +1,42 @@
-// 제너레이터 아닌 일반 함수다.
-function bar(url1, url2) {
-    return Promise.all([
-        request(url1),
-        request(url2)
-    ]);
-}
-
 function *foo() {
-    // 프로미스형 동시성 관련 세부분은 감춘다.
-    // bar() 내부
-    var results = yield bar(
-        "http://some.url.1",
-        "http://some.url.2"
-    );
+    try {
+        yield "B";
+    } catch (error) {
+        console.log("*foo()에서 붙잡힌 에러:", error);
+    }
 
-    var r1 = results[0];
-    var r2 = results[1];
-
-    var r3 = yield request("http://some.url.3/?v=" + r1 + "," + r2);
-
-    console.log(r3);
+    yield "C";
+    throw "D";
 }
-// 앞서 정의한 run 유틸리티
-run(foo);
+
+function *bar() {
+    yield "A";
+    try {
+        yield *foo();
+    } catch (error) {
+        console.log("*bar()에서 붙잡힌 에러:", error);
+    }
+
+    yield "E";
+    yield *baz();
+
+    // 아래 코드는 실행되지 않는다.
+    yield "G";
+}
+
+function *baz() {
+    throw "F";
+}
+
+var it = bar();
+
+console.log("외부:", it.next().value);
+console.log("외부:", it.next(1).value);
+console.log("외부:", it.throw(2).value);
+console.log("외부:", it.next(3).value);
+
+try {
+    console.log("외부:", it.next(4).value);
+} catch (error) {
+    console.log("외부에서 붙잡힌 에러:", error);
+}
