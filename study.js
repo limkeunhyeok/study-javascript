@@ -1,42 +1,24 @@
-function *foo() {
-    try {
-        yield "B";
-    } catch (error) {
-        console.log("*foo()에서 붙잡힌 에러:", error);
-    }
-
-    yield "C";
-    throw "D";
+function foo(x, y, cb) {
+    setTimeout(function() {
+        // 에러-우선 스타일
+        cb(null, x + y);
+    }, 1000);
 }
 
-function *bar() {
-    yield "A";
-    try {
-        yield *foo();
-    } catch (error) {
-        console.log("*bar()에서 붙잡힌 에러:", error);
-    }
-
-    yield "E";
-    yield *baz();
-
-    // 아래 코드는 실행되지 않는다.
-    yield "G";
+function thunkify(fn) {
+    return function() {
+        var args = [].slice.call(arguments);
+        return function(cb) {
+            args.push(cb);
+            return fn.apply(null, args);
+        };
+    };
 }
 
-function *baz() {
-    throw "F";
-}
+var whatIsThis = thunkify(foo);
 
-var it = bar();
+var fooThunk = whatIsThis(3, 4);
 
-console.log("외부:", it.next().value);
-console.log("외부:", it.next(1).value);
-console.log("외부:", it.throw(2).value);
-console.log("외부:", it.next(3).value);
-
-try {
-    console.log("외부:", it.next(4).value);
-} catch (error) {
-    console.log("외부에서 붙잡힌 에러:", error);
-}
+fooThunk(function(sum) {
+    console.log(sum);
+});
