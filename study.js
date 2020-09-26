@@ -1,17 +1,9 @@
-// 케이스 1
-var x = [];
-for (var i = 0; i < 10; i++) {
-    x[i] = "x";
+function factorial(n) {
+    function fact(n, res) {
+        if (n < 2) return res;
+        return fact(n - 1, n * res);
+    }
+    return fact(n, 1);
 }
 
-// 케이스 2
-var x = [];
-for (var i = 0; i < 10; i++) {
-    x[x.length] = "x";
-}
-
-// 케이스 3
-var x = [];
-for (var i = 0; i < 10; i++) {
-    x.push("x");
-}
+console.log(factorial(100));
