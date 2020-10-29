@@ -254,9 +254,7 @@ const conn = { // mysql 접속 정보
 ...
 ```
 
-<p>
-    위의 코드는 기존의 monolithic_goods.js에서 데이터베이스 접속 정보를 추가하였다.
-</p>
+##### 상품 등록 - register 함수
 
 ```javascript
 ...
@@ -288,9 +286,7 @@ function register(method, pathname, params, cb) {
 }
 ```
 
-<p>
-    위의 코드에서 register 함수는 POST 메서드에 /goods란 URI가 호출되면 상품 정보를 저장한다. 먼저 입력 파라미터의 유효성 검사를 해서 필수 파라미터가 정상적으로 입력되었는지 확인한다. 정상적으로 입력되었다면 db에 저장하고, 저장하는 과정에서 에러가 발생하면 에러를 처리한다.
-</p>
+##### 상품 조회 - inquiry 함수
 
 ```javascript
 ...
@@ -317,9 +313,7 @@ function inquiry(method, pathname, params, cb) {
 }
 ```
 
-<p>
-    위의 코드에서 inquiry 함수는 등록된 상품을 조회한다. 상품 조회는 입력 파라미터가 없어 유효성 검사를 하지 않는다. 만약 등록된 상품이 없으면 "no data" 에러 메시지를 보내고, 상품이 등록되어 있으면 db에 저장된 내용으로 응답한다.
-</p>
+##### 상품 삭제 - unregister
 
 ```javascript
 ...
@@ -351,6 +345,232 @@ function unregister(method, pathname, params, cb) {
 }
 ```
 
-<p>
-    위의 코드에서 unregister 함수는 등록된 상품을 삭제한다.
-</p>
+#### 5-2 회원 관리 기능 만들기
+
+```javascript
+// mysql 모듈 선언
+const mysql = require('mysql');
+const conn = { // mysql 접속 정보
+    host: 'localhost',
+    user: 'micro',
+    password: 'service',
+    database: 'monolithic'
+};
+
+...
+```
+
+##### 회원 등록 - register 함수
+
+```javascript
+...
+
+function register(method, pathname, params, cb) {
+    var response = {
+        key: params.key,
+        errorCode: 0,
+        errorMessage: "success"
+    };
+
+    if (params.username == null || params.password == null) {
+        response.errorCode = 1;
+        response.errorMessage = "Invalid Parameters";
+        cb(response);
+    } else {
+        var connection = mysql.createConnection(conn);
+        connection.connect();
+        connection.query("INSERT INTO members(username, password) values(?, ?)",
+            [params.username, params.password],
+            (error, results, fields) => {
+                if (error) {
+                    response.errorCode = 1;
+                    response.errorMessage = error;
+                }
+                cb(response);
+            });
+        connection.end();
+    }
+}
+```
+
+##### 회원 인증 - inquiry 함수
+
+```javascript
+...
+
+function inquiry(method, pathname, params, cb) {
+    var response = {
+        key: params.key,
+        errorCode: 0,
+        errorMessage: "success"
+    };
+
+    if (params.username == null || params.password == null) {
+        response.errorCode = 1;
+        response.errorMessage = "Invalid Parameters";
+        cb(response);
+    } else {
+        var connection = mysql.createConnection(conn);
+        connection.connect();
+        connection.query("SELECT id FROM members WHERE username = (?) AND password = (?)",
+            [params.username, params.password],
+            (error, results, fields) => {
+            if (error || results.length == 0) {
+                response.errorCode = 1;
+                response.errorMessage = "invalid password"
+            } else {
+                response.results = results[0].id;
+            }
+            cb(response);
+        });
+        connection.end();
+    }
+}
+```
+
+##### 회원 탈퇴 - unregister 함수
+
+```javascript
+...
+
+function unregister(method, pathname, params, cb) {
+    var response = {
+        key: params.key,
+        errorCode: 0,
+        errorMessage: "success"
+    };
+
+    if (params.username == null) {
+        response.errorCode = 1;
+        response.errorMessage = "Invalid Parameters";
+        cb(response);
+    } else {
+        var connection = mysql.createConnection(conn);
+        connection.connect();
+        connection.query("DELETE FROM members WHERE id = ?",
+            [params.username],
+            (error, results, fields) => {
+                if (error) {
+                    response.errorCode = 1;
+                    response.errorMessage = error;
+                }
+                cb(response);
+            });
+        connection.end();
+    }
+}
+```
+
+#### 5-3 구매 관리 기능 만들기
+
+```javascript
+// mysql 모듈 선언
+const mysql = require('mysql');
+const conn = { // mysql 접속 정보
+    host: 'localhost',
+    user: 'micro',
+    password: 'service',
+    database: 'monolithic'
+};
+
+...
+```
+
+##### 구매 - register 함수
+
+```javascript
+...
+
+function register(method, pathname, params, cb) {
+    var response = {
+        key: params.key,
+        errorCode: 0,
+        errorMessage: "success"
+    };
+
+    if (params.userid == null || params.goodsid == null) {
+        response.errorCode = 1;
+        response.errorMessage = "Invalid Parameters";
+        cb(response);
+    } else {
+        var connection = mysql.createConnection(conn);
+        connection.connect();
+        connection.query("INSERT INTO purchases(userid, goodsid) values(?, ?)",
+            [params.userid, params.goodsid],
+            (error, results, fields) => {
+                if (error) {
+                    response.errorCode = 1;
+                    response.errorMessage = error;
+                }
+                cb(response);
+            });
+        connection.end();
+    }
+}
+```
+
+##### 구매 내역 조회 - inquiry 함수
+
+```javascript
+function inquiry(method, pathname, params, cb) {
+    var response = {
+        key: params.key,
+        errorCode: 0,
+        errorMessage: "success"
+    };
+
+    if (params.userid == null) {
+        response.errorCode = 1;
+        response.errorMessage = "Invalid Parameters";
+        cb(response);
+    } else {
+        var connection = mysql.createConnection(conn);
+        connection.connect();
+        connection.query("SELECT id, goodsid FROM purchases WHERE userid = (?)",
+            [params.userid],
+            (error, results, fields) => {
+            if (error) {
+                response.errorCode = 1;
+                response.errorMessage = error;
+            } else {
+                response.results = results;
+            }
+            cb(response);
+        });
+        connection.end();
+    }
+}
+```
+
+### 6. 테스트
+
+```javascript
+const http = require('http');
+
+var options = {
+    host: "127.0.0.1",
+    port: 8000,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
+
+function request(cb, params) {
+    var req = http.request(options, (res) => {
+        var data = "";
+        res.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        res.on('end', () => {
+            console.log(options, data);
+            cb();
+        });
+    });
+
+    if (params) {
+        req.write(JSON.stringify(params));
+    }
+    req.end();
+}
+```

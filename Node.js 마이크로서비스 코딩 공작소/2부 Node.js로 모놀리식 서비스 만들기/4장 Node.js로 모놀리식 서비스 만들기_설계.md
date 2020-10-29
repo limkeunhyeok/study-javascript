@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `members` (
 #### 4-3 구매 관리 테이블 설계
 
 ```SQL
-CREATE TABLE IF NOT EXISTS `members` (
+CREATE TABLE IF NOT EXISTS `purchases` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `userId` int NOT NULL,
     `goodsId` int NOT NULL,
